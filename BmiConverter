@@ -1,0 +1,79 @@
+/*This is an BMI Converter which use the in built api and JSON to calculate BMI. 
+This project will give you the idea about how to use JSON along with php, their syntax and so on.
+
+
+BMI Converter
+*/
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>BMI Calculator</title>
+<style>
+     #box
+     {
+         height:250px;
+         width:350px;
+         border:2px solid black;
+         margin:0px auto;
+     }
+     h2
+    {
+         text-align: center;
+    }
+    table
+    {
+         margin:0px auto;
+    }
+    #result
+    {
+         color:purple;
+         font-size: 25px;
+         text-align: justify;
+         padding:2px;
+    }
+</style>
+<script>
+ function calculateBMI()
+     {
+         var height = document.getElementById("height").value;
+         var weight = document.getElementById("weight").value;
+ 
+         if (height%1>=0 && weight%1 >=0)
+         {
+             var xmlhttp = new XMLHttpRequest();
+             var url = "http://localhost:1080/JSON/calculate_bmi.php";
+             var jsObject = {ht:height, wt:weight};
+             var data = JSON.stringify(jsObject);
+             xmlhttp.open("POST", url, true);
+             xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+             xmlhttp.send("input=" + data);
+             xmlhttp.onreadystatechange = function(){
+             if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+             {
+                 var output = xmlhttp.responseText;
+                 var jsOutput = JSON.parse(output);
+                 document.getElementById("result").innerHTML =
+                     "Your BMI is " + (jsOutput.bmi).toFixed(2) + ". " + jsOutput.message;
+             }
+            }
+         }
+         else
+         {
+             alert("Enter valid inputs.");
+         }
+     }
+</script>
+</head>
+<body>
+    <div id="box">
+        <h2>BMI Calculator</h2>
+        <table>
+             <tr><td>Height:</td><td><input type="text" id="height" /></td><td>(height in centimeters)</td></tr>
+             <tr><td>Weight:</td><td><input type="text" id="weight" /></td><td>(weight in kilograms)</td></tr>
+        </table><br />
+         <center><button id="btnCalculate" onclick="calculateBMI();">Calculate BMI</button></center>
+         <div id="result"></div>
+    </div>
+</body>
+</html>
